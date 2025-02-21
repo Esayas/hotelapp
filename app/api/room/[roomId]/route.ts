@@ -43,6 +43,7 @@ export async function DELETE(
     const user = auth();
     const userId = (await user).userId;
 
+    console.log("Id", params.roomId);
     if (!params.roomId) {
       return new NextResponse("Room Id is required", { status: 401 });
     }

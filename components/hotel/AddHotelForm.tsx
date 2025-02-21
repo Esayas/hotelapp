@@ -18,7 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
 import { UploadButton } from "../uploadthing";
-import { toast, useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import {
@@ -52,6 +52,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AddRoomForm from "../room/AddRoomForm";
+import { Separator } from "../ui/separator";
+import RoomCard from "../room/RoomCard";
 
 interface AddHotelFormProps {
   hotel: HotelWithRooms | null;
@@ -782,6 +784,20 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                 )}
               </div>
             </div>
+
+            {hotel && !!hotel.rooms.length && (
+              <div>
+                <Separator />
+                <h3 className="text-lg font-semibold" my-4>
+                  Hotel Rooms
+                </h3>
+                <div className="grid grid-cols-1 2xl:grid-cols-2 gap-6">
+                  {hotel.rooms.map((room) => {
+                    return <RoomCard key={room.id} hotel={hotel} room={room} />;
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </form>

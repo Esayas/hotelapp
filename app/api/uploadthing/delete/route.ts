@@ -24,38 +24,3 @@ export async function POST(req: Request) {
   // const newUrl = "wTZHhleFtekoFhsmSgFLxtJU9uNj5Rzmc0b3nl2TyqfiKeA6";
   // await utapi.deleteFiles(newUrl);
 }
-
-export async function DELETE(
-  req: Request,
-  { params }: { params: { Imagekey: string } }
-) {
-  try {
-    const user = auth();
-    const userId = (await user).userId;
-
-    if (!userId) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-
-    const imagekey = params.Imagekey;
-
-    try {
-      const res = await utapi.deleteFiles(imagekey);
-      return NextResponse.json(res);
-    } catch (error) {
-      console.log("error at uploadthing/delete:", error);
-      return new NextResponse("Internal Server Error", { status: 500 });
-    }
-
-    const hotel = await prismadb.hotel.delete({
-      where: {
-        id: params.hotelId,
-      },
-    });
-
-    return NextResponse.json(hotel);
-  } catch (error: any) {
-    // console.log("Error at /api/hotelId DELETE", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
-  }
-}

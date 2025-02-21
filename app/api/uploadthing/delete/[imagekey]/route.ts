@@ -5,6 +5,7 @@ import { UTApi } from "uploadthing/server";
 const utapi = new UTApi();
 export async function DELETE(
   req: Request,
+  // { params }: { params: { imagekey: string } }
   { params }: { params: { imagekey: string } }
 ) {
   console.log("TG##33");

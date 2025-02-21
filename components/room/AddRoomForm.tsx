@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Pencil, PenLine, XCircle } from "lucide-react";
+import { Divide, Loader2, Pencil, PenLine, XCircle } from "lucide-react";
 import { UploadButton } from "../uploadthing";
 
 // import {Hotel, Room} from "pr"
@@ -606,6 +606,7 @@ const AddRoomForm = ({ hotel, room, handleDialogueOpen }: AddRoomFormProps) => {
                 )}
               </Button>
             )}
+            <div></div>
           </div>
         </form>
       </Form>

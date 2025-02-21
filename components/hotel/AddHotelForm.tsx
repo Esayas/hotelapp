@@ -21,7 +21,16 @@ import { UploadButton } from "../uploadthing";
 import { toast, useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { Eye, Loader2, Pencil, PenLine, Trash, XCircle } from "lucide-react";
+import {
+  Eye,
+  Loader2,
+  Pencil,
+  PenLine,
+  Plus,
+  Terminal,
+  Trash,
+  XCircle,
+} from "lucide-react";
 import axios from "axios";
 import { ICity, IState } from "country-state-city";
 import useLocation from "@/hooks/useLocation";
@@ -33,6 +42,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import AddRoomForm from "../room/AddRoomForm";
 
 interface AddHotelFormProps {
   hotel: HotelWithRooms | null;
@@ -77,6 +96,7 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
   const [cities, setCities] = useState<ICity[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isHotelDeleting, setIsHotelDeleting] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const { toast } = useToast();
   const router = useRouter();
@@ -234,6 +254,10 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
       .finally(() => {
         setImageIsDeleting(false);
       });
+  };
+
+  const handleDialogueOpen = () => {
+    setOpen((prev) => !prev);
   };
 
   return (
@@ -660,6 +684,17 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                   )}
                 />
               </div>
+              {hotel && !hotel.rooms.length && (
+                <Alert className="bg-indigo-600 text-white">
+                  <Terminal className="h-4 w-4 strock-white" />
+                  <AlertTitle>One last step!!</AlertTitle>
+                  <AlertDescription>
+                    Your hotel was created successfully
+                    <div>Please add some room to complete your hotel setup</div>
+                  </AlertDescription>
+                </Alert>
+              )}
+
               <div className="flex justify-between gap-2 flex-wrap">
                 {hotel && (
                   <Button
@@ -686,10 +721,36 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                     onClick={() => router.push(`/hotel-details/${hotel.id}`)}
                     type="button"
                     variant="outline"
+                    className="max-w-[150px]"
                   >
                     <Eye className="mr-2 h-4 w-4" />
                     View
                   </Button>
+                )}
+                {hotel && (
+                  <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogTrigger>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="max-w-[150px]"
+                      >
+                        <Plus className="mr-2 h-4 w-4" /> Add Room
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-[900px] w-[90%]">
+                      <DialogHeader className="px-2">
+                        <DialogTitle>Add Room?</DialogTitle>
+                        <DialogDescription>
+                          Add details about a room in your hotel.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <AddRoomForm
+                        hotel={hotel}
+                        handleDialogueOpen={handleDialogueOpen}
+                      />
+                    </DialogContent>
+                  </Dialog>
                 )}
 
                 {hotel ? (

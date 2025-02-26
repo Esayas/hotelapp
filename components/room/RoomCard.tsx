@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import Image from "next/image";
-import AmenityItem from "../AmenityItem";
+// import AmenityItem from "../AmenityItem";
 import {
   AirVent,
   Bed,
@@ -31,7 +31,7 @@ import {
 } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -44,6 +44,11 @@ import {
 import AddRoomForm from "./AddRoomForm";
 import axios from "axios";
 import { toast } from "@/hooks/use-toast";
+import AmenityItem from "../AmenityItem";
+import { DatePickerWithRange } from "./DateRangePicker";
+import { DateRange } from "react-day-picker";
+import { differenceInBusinessDays } from "date-fns";
+import { Checkbox } from "../ui/checkbox";
 
 interface RoomCardProps {
   hotel?: Hotel & {
@@ -54,8 +59,33 @@ interface RoomCardProps {
 }
 
 const RoomCard = ({ hotel, room, bookings = [] }: RoomCardProps) => {
+  // const RoomCard = ({ hotel, room, bookings }: RoomCardProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [date, setDate] = useState<DateRange | undefined>();
+  const [totalPrice, setTotalPrice] = useState(room?.roomPrice);
+  const [includeBreakFast, setIncludeBreakFast] = useState(false);
+  const [days, setDays] = useState(1);
+
+  useEffect(() => {
+    if (date && date.from && date.to) {
+      const dayCount = differenceInBusinessDays(date.to, date.from);
+
+      setDays(dayCount);
+
+      if (dayCount && room.roomPrice) {
+        if (includeBreakFast && room.breakFastPrice) {
+          setTotalPrice(
+            dayCount * room.roomPrice + dayCount * room.breakFastPrice
+          );
+        } else {
+          setTotalPrice(dayCount * room.roomPrice);
+        }
+      } else {
+        setTotalPrice(room?.roomPrice);
+      }
+    }
+  }, [date, room.roomPrice, includeBreakFast]);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -204,7 +234,35 @@ const RoomCard = ({ hotel, room, bookings = [] }: RoomCardProps) => {
       </CardContent>
       <CardFooter>
         {isHotelDetailsPage ? (
-          <div> Hotel details Page</div>
+          <div className="flex flex-col gap-6">
+            <div>
+              <div className="mb-2">
+                Select days that you will spend in this room
+              </div>
+              <DatePickerWithRange date={date} setDate={setDate} />
+            </div>
+
+            {room.breakFastPrice > 0 && (
+              <div>
+                <div className="mb-2">
+                  Do you want to be served a breakfast each day
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="breakfast"
+                    onCheckedChange={(value) => setIncludeBreakFast(!!value)}
+                  />
+                  <label htmlFor="breakfast" className="text-sm">
+                    Include BreakFast
+                  </label>
+                </div>
+              </div>
+            )}
+            <div>
+              Total Price: <span className="font-bold">${totalPrice}</span> for{" "}
+              <span className="font-bold">{days} Days</span>
+            </div>
+          </div>
         ) : (
           <div className="flex w-full justify-between">
             <Button

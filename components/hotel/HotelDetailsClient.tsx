@@ -5,7 +5,7 @@ import { HotelWithRooms } from "./AddHotelForm";
 import { Booking } from "@prisma/client";
 import Image from "next/image";
 import AmenityItem from "../AmenityItem";
-import { Divide, Dumbbell, MapPin, Waves, Wine } from "lucide-react";
+import { Dumbbell, MapPin, Wine } from "lucide-react";
 import RoomCard from "../room/RoomCard";
 import { FaSwimmer, FaSpa } from "react-icons/fa";
 

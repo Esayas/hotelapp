@@ -65,7 +65,7 @@ const HotelCard = ({ hotel }: { hotel: HotelWithRooms }) => {
               {hotel?.rooms[0]?.roomPrice && (
                 <>
                   <div className="font-semibold text-based">
-                    `${hotel?.rooms[0]?.roomPrice}`
+                    ${hotel?.rooms[0]?.roomPrice}
                   </div>
                   <div className="text-xs">/24hrs</div>
                 </>

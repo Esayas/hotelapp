@@ -17,9 +17,6 @@ export async function POST(req: Request) {
   const body = await req.json();
   const { booking, payment_intent_id } = body;
 
-  console.log("booking", { booking });
-  console.log("payment_intent_id", { payment_intent_id });
-
   const bookingData = {
     ...booking,
     userName: user.firstName,
@@ -28,8 +25,6 @@ export async function POST(req: Request) {
     currency: "USD",
     paymentIntentId: payment_intent_id,
   };
-
-  console.log("bookingData", { bookingData });
 
   let foundBooking;
 
@@ -41,6 +36,28 @@ export async function POST(req: Request) {
 
   if (foundBooking && payment_intent_id) {
     //update
+    const current_intent = await stripe.paymentIntents.retrieve(
+      payment_intent_id
+    );
+    if (current_intent) {
+      const updated_intent = await stripe.paymentIntents.update(
+        payment_intent_id,
+        {
+          amount: booking.totalPrice * 100,
+        }
+      );
+
+      const res = await prismadb.booking.update({
+        where: { paymentIntentId: payment_intent_id, userId: user.id },
+        data: bookingData,
+      });
+
+      if (!res) {
+        return NextResponse.error();
+      }
+
+      return NextResponse.json({ paymentIntent: updated_intent });
+    }
   } else {
     //create
     const paymentIntent = await stripe.paymentIntents.create({

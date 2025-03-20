@@ -9,6 +9,7 @@ interface HotelDetailsProps {
 }
 
 const HotelDetails = async ({ params }: HotelDetailsProps) => {
+  // console.log("Id", params.hotelId);
   const hotel = await getHotelById(params.hotelId);
   if (!hotel) return <div>Oop! Hotel with the given Id not found</div>;
 

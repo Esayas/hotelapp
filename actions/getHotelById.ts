@@ -1,6 +1,7 @@
 import prismadb from "@/lib/prismadb";
 
 export const getHotelById = async (hotelId: string) => {
+  console.log("GGG333", hotelId);
   try {
     const hotel = await prismadb.hotel.findUnique({
       where: { id: hotelId },
